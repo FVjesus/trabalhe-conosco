@@ -13,7 +13,7 @@ class ProducerService {
     return producers;
   }
 
-  async getById(id: number): Promise<Producer> {
+  async getById(id: number): Promise<Producer | null> {
     const producer = await this.producerRepository.getById(id);
     return producer;
   }

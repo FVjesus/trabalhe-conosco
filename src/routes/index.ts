@@ -1,5 +1,4 @@
 import express from 'express';
-import { db } from '../db';
 import { ProducerController } from '../controllers/producerController';
 
 const router = express.Router();
