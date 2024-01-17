@@ -26,8 +26,8 @@ export class ProducerController {
       const producer = req.body;
       const newProducer = await producerService.create(producer);
       res.json(newProducer);
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      res.status(500).json(error.message);
     }
   }
 

@@ -1,6 +1,6 @@
 import { Producer } from "../models/producer";
 import { ProducerRepository } from "../repositories/producerRepository";
-
+import { ProducerValidation } from "../validations/producerValidation";
 class ProducerService {
   private producerRepository: ProducerRepository;
 
@@ -19,11 +19,13 @@ class ProducerService {
   }
 
   async create(producer: Producer): Promise<Producer> {
+    ProducerValidation.validateProducer(producer);
     const newProducer = await this.producerRepository.create(producer);
     return newProducer;
   }
 
   async update(producer: Producer): Promise<Producer> {
+    ProducerValidation.validateProducer(producer);
     const updatedProducer = await this.producerRepository.update(producer);
     return updatedProducer;
   }
