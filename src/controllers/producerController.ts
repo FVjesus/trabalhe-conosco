@@ -50,4 +50,13 @@ export class ProducerController {
       res.status(500).json(error);
     }
   }
+
+  async dashboard(req: Request, res: Response) {
+    try {
+      const dashboard = await producerService.dashboard();
+      res.json(dashboard);
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  }
 }

@@ -9,5 +9,6 @@ router.get("/producers/:id", producerController.getById);
 router.post("/producers", producerController.create);
 router.put("/producers", producerController.update);
 router.delete("/producers/:id", producerController.delete);
+router.get("/dashboard", producerController.dashboard);
 
 export { router };

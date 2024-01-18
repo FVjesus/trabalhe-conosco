@@ -42,4 +42,64 @@ export class ProducerRepository {
     });
     return deletedProducer;
   }
+
+  async totalFarmers(): Promise<number> {
+    const totalFarmers = db.producer.count();
+    return totalFarmers;
+  }
+
+  async totalFarmersPerState(): Promise<any> {
+    const totalFarmersByState = db.producer.groupBy({
+      by: ["state"],
+      _count: true,
+    });
+    return totalFarmersByState;
+  }
+
+  async totalArea(): Promise<any> {
+    const totalArea = db.producer.aggregate({
+      _sum: {
+        totalArea: true,
+      },
+    });
+    return totalArea;
+  }
+
+  async totalAreaHarvested(): Promise<any> {
+    const totalAreaHarvested = db.producer.aggregate({
+      _sum: {
+        areaHarvested: true,
+      },
+    });
+    return totalAreaHarvested;
+  }
+
+  async totalAreaPlanted(): Promise<any> {
+    const totalAreaPlanted = db.producer.aggregate({
+      _sum: {
+        areaPlanted: true,
+      },
+    });
+    return totalAreaPlanted;
+  }
+
+  async totalAreaPerState(): Promise<any> {
+    const totalFarmersPerState = db.producer.groupBy({
+      by: ["state"],
+      _sum: {
+        totalArea: true,
+      },
+    });
+    return totalFarmersPerState;
+  }
+
+  async totalAreaPerCulture(): Promise<any> {
+    const totalAreaPerCulture = db.producer.groupBy({
+      by: ["culture"],
+      _sum: {
+        totalArea: true,
+      },
+    });
+    return totalAreaPerCulture;
+  }
 }
