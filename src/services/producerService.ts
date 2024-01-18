@@ -2,6 +2,7 @@ import { Prisma } from "@prisma/client";
 import { Producer } from "../models/producer";
 import { ProducerRepository } from "../repositories/producerRepository";
 import { ProducerValidation } from "../validations/producerValidation";
+import { StateTranslator } from "../utils/stateTranslator";
 
 class ProducerService {
   private producerRepository: ProducerRepository;
@@ -23,11 +24,21 @@ class ProducerService {
   async create(producer: Producer): Promise<Producer> {
     try {
       ProducerValidation.validateProducer(producer);
+
+      if (producer.state) {
+        const acronym = StateTranslator.getAcronym(producer.state);
+        if (acronym) {
+          producer.state = acronym;
+        }
+      }
+
       const newProducer = await this.producerRepository.create(producer);
       return newProducer;
     } catch (error) {
-      
-      if (error instanceof Prisma.PrismaClientKnownRequestError && error.code === "P2002") {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
         throw new Error("Documento já cadastrado");
       }
 
@@ -35,15 +46,48 @@ class ProducerService {
     }
   }
 
-  async update(producer: Producer): Promise<Producer> {
-    ProducerValidation.validateProducer(producer);
-    const updatedProducer = await this.producerRepository.update(producer);
-    return updatedProducer;
+  async update(id: number, producer: Producer): Promise<Producer> {
+    try {
+      ProducerValidation.validateProducer(producer);
+
+      if (producer.state) {
+        const acronym = StateTranslator.getAcronym(producer.state);
+        if (acronym) {
+          producer.state = acronym;
+        }
+      }
+
+      const updatedProducer = await this.producerRepository.update(
+        id,
+        producer
+      );
+      return updatedProducer;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new Error("Id não encontrado");
+      }
+
+      throw error;
+    }
   }
 
   async delete(id: number): Promise<Producer> {
-    const deletedProducer = await this.producerRepository.delete(id);
-    return deletedProducer;
+    try {
+      const deletedProducer = await this.producerRepository.delete(id);
+      return deletedProducer;
+    } catch (error) {
+      if (
+        error instanceof Prisma.PrismaClientKnownRequestError &&
+        error.code === "P2025"
+      ) {
+        throw new Error("Id não encontrado");
+      }
+
+      throw error;
+    }
   }
 
   async dashboard(): Promise<any> {
@@ -54,7 +98,7 @@ class ProducerService {
       totalFarmerPerState,
       totalAreaPerCulture,
       totalAreaHarvested,
-      totalAreaPlanted
+      totalAreaPlanted,
     ] = await Promise.all([
       this.producerRepository.totalFarmers(),
       this.producerRepository.totalArea(),
@@ -62,14 +106,17 @@ class ProducerService {
       this.producerRepository.totalFarmersPerState(),
       this.producerRepository.totalAreaPerCulture(),
       this.producerRepository.totalAreaHarvested(),
-      this.producerRepository.totalAreaPlanted()
+      this.producerRepository.totalAreaPlanted(),
     ]);
-  
-    const areaPerState: Record<string, number> = totalArePerState.reduce((acc: Record<string, number>, item: any) => {
-      acc[item.state] = (item._sum.totalArea / totalArea._sum.totalArea);
-      return acc;
-    }, {});
-  
+
+    const areaPerState: Record<string, number> = totalArePerState.reduce(
+      (acc: Record<string, number>, item: any) => {
+        acc[item.state] = item._sum.totalArea / totalArea._sum.totalArea;
+        return acc;
+      },
+      {}
+    );
+
     const dashboard = {
       totalFarmers,
       totalFarmerPerState,
@@ -78,9 +125,9 @@ class ProducerService {
       totalAreaPlanted: totalAreaPlanted?._sum?.areaPlanted || 0,
       totalArePerState,
       areaPerState,
-      totalAreaPerCulture
+      totalAreaPerCulture,
     };
-  
+
     return dashboard;
   }
 }

@@ -11,4 +11,4 @@ interface Producer {
   culture: string[];
 }
 
-export type { Producer } 
+export type { Producer };

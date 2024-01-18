@@ -24,10 +24,10 @@ export class ProducerRepository {
     return newProducer;
   }
 
-  async update(producer: Producer): Promise<Producer> {
+  async update(id:number, producer: Producer): Promise<Producer> {
     const updatedProducer = db.producer.update({
       where: {
-        id: producer.id,
+        id: id,
       },
       data: producer,
     });

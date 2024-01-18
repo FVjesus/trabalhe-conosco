@@ -33,11 +33,12 @@ export class ProducerController {
 
   async update(req: Request, res: Response) {
     try {
+      const id = parseInt(req.params.id);
       const producer = req.body;
-      const updatedProducer = await producerService.update(producer);
+      const updatedProducer = await producerService.update(id, producer);
       res.json(updatedProducer);
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      res.status(500).json(error.message);
     }
   }
 
@@ -46,8 +47,8 @@ export class ProducerController {
       const id = parseInt(req.params.id);
       const deletedProducer = await producerService.delete(id);
       res.json(deletedProducer);
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      res.status(500).json(error.message);
     }
   }
 
@@ -55,8 +56,8 @@ export class ProducerController {
     try {
       const dashboard = await producerService.dashboard();
       res.json(dashboard);
-    } catch (error) {
-      res.status(500).json(error);
+    } catch (error: any) {
+      res.status(500).json(error.message);
     }
   }
 }
