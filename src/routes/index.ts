@@ -11,4 +11,8 @@ router.put("/producers/:id", producerController.update);
 router.delete("/producers/:id", producerController.delete);
 router.get("/dashboard", producerController.dashboard);
 
+router.use((req, res) => {
+  res.status(404).json({ error: 'Not Found' });
+});
+
 export { router };

@@ -1,15 +1,13 @@
 import { Producer } from "../models/producer";
-import { PrismaClient } from "@prisma/client";
-
-const db = new PrismaClient();
+import prisma from '../client'
 export class ProducerRepository {
   async getAll(): Promise<Producer[]> {
-    const producers = db.producer.findMany();
+    const producers = prisma.producer.findMany();
     return producers;
   }
 
   async getById(id: number): Promise<Producer | null> {
-    const producer = db.producer.findUnique({
+    const producer = prisma.producer.findUnique({
       where: {
         id: id,
       },
@@ -17,15 +15,15 @@ export class ProducerRepository {
     return producer;
   }
 
-  async create(producer: Producer): Promise<Producer> {
-    const newProducer = db.producer.create({
+  async create(producer: Omit<Producer, "id">): Promise<Producer> {
+    const newProducer = prisma.producer.create({
       data: producer,
     });
     return newProducer;
   }
 
-  async update(id:number, producer: Producer): Promise<Producer> {
-    const updatedProducer = db.producer.update({
+  async update(id: number, producer: Producer): Promise<Producer> {
+    const updatedProducer = prisma.producer.update({
       where: {
         id: id,
       },
@@ -35,7 +33,7 @@ export class ProducerRepository {
   }
 
   async delete(id: number): Promise<Producer> {
-    const deletedProducer = db.producer.delete({
+    const deletedProducer = prisma.producer.delete({
       where: {
         id: id,
       },
@@ -44,12 +42,12 @@ export class ProducerRepository {
   }
 
   async totalFarmers(): Promise<number> {
-    const totalFarmers = db.producer.count();
+    const totalFarmers = prisma.producer.count();
     return totalFarmers;
   }
 
   async totalFarmersPerState(): Promise<any> {
-    const totalFarmersByState = db.producer.groupBy({
+    const totalFarmersByState = prisma.producer.groupBy({
       by: ["state"],
       _count: true,
     });
@@ -57,7 +55,7 @@ export class ProducerRepository {
   }
 
   async totalArea(): Promise<any> {
-    const totalArea = db.producer.aggregate({
+    const totalArea = prisma.producer.aggregate({
       _sum: {
         totalArea: true,
       },
@@ -66,7 +64,7 @@ export class ProducerRepository {
   }
 
   async totalAreaHarvested(): Promise<any> {
-    const totalAreaHarvested = db.producer.aggregate({
+    const totalAreaHarvested = prisma.producer.aggregate({
       _sum: {
         areaHarvested: true,
       },
@@ -75,7 +73,7 @@ export class ProducerRepository {
   }
 
   async totalAreaPlanted(): Promise<any> {
-    const totalAreaPlanted = db.producer.aggregate({
+    const totalAreaPlanted = prisma.producer.aggregate({
       _sum: {
         areaPlanted: true,
       },
@@ -84,7 +82,7 @@ export class ProducerRepository {
   }
 
   async totalAreaPerState(): Promise<any> {
-    const totalFarmersPerState = db.producer.groupBy({
+    const totalFarmersPerState = prisma.producer.groupBy({
       by: ["state"],
       _sum: {
         totalArea: true,
@@ -94,7 +92,7 @@ export class ProducerRepository {
   }
 
   async totalAreaPerCulture(): Promise<any> {
-    const totalAreaPerCulture = db.producer.groupBy({
+    const totalAreaPerCulture = prisma.producer.groupBy({
       by: ["culture"],
       _sum: {
         totalArea: true,
