@@ -126,6 +126,10 @@ class ProducerService {
       totalArePerState,
       areaPerState,
       totalAreaPerCulture,
+      areaUsage: {
+        used: (totalAreaHarvested?._sum?.areaHarvested || 0) + (totalAreaPlanted?._sum?.areaPlanted || 0),
+        total: totalArea?._sum?.totalArea || 0,
+      },
     };
 
     return dashboard;
