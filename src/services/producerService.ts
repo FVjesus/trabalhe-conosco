@@ -18,6 +18,9 @@ class ProducerService {
 
   async getById(id: number): Promise<Producer | null> {
     const producer = await this.producerRepository.getById(id);
+    if (!producer) {
+      throw { status: 400, message: "Id não encontrado" };
+    }
     return producer;
   }
 
@@ -39,7 +42,7 @@ class ProducerService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2002"
       ) {
-        throw new Error("Documento já cadastrado");
+        throw { status: 400, message: "CPF/CNPJ já cadastrado" };
       }
 
       throw error;
@@ -67,7 +70,7 @@ class ProducerService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2025"
       ) {
-        throw new Error("Id não encontrado");
+        throw { status: 400, message: "Id não encontrado" };
       }
 
       throw error;
@@ -83,7 +86,7 @@ class ProducerService {
         error instanceof Prisma.PrismaClientKnownRequestError &&
         error.code === "P2025"
       ) {
-        throw new Error("Id não encontrado");
+        throw { status: 400, message: "Id não encontrado" };
       }
 
       throw error;
@@ -127,7 +130,9 @@ class ProducerService {
       areaPerState,
       totalAreaPerCulture,
       areaUsage: {
-        used: (totalAreaHarvested?._sum?.areaHarvested || 0) + (totalAreaPlanted?._sum?.areaPlanted || 0),
+        used:
+          (totalAreaHarvested?._sum?.areaHarvested || 0) +
+          (totalAreaPlanted?._sum?.areaPlanted || 0),
         total: totalArea?._sum?.totalArea || 0,
       },
     };

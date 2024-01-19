@@ -10,25 +10,23 @@ export class ProducerValidation {
         producer.totalArea
       )
     ) {
-      throw new Error(
-        "A soma das áreas (areaPlanted + areaHarvested) deve ser menor ou igual à totalArea."
-      );
+      throw {status: 400, message: "A soma das áreas (areaPlanted + areaHarvested) deve ser menor ou igual à totalArea."};
     }
 
     if (!this.validateDocument(producer.document)) {
-      throw new Error("CPF/CNPJ inválido");
+      throw {status: 400, message:"CPF/CNPJ inválido"};
     }
 
     if (producer.city === "") {
-      throw new Error("Cidade inválida");
+      throw {status: 400, message:"Cidade inválida"};
     }
     
     if (producer.state === "") {
-      throw new Error("Estado inválido");
+      throw {status: 400, message:"Estado inválido"};
     }
 
     if (producer.culture.length === 0) {
-      throw new Error("A fazenda deve ter pelo menos uma cultura.");
+      throw {status: 400, message:"A fazenda deve ter pelo menos uma cultura."};
     }
   }
 
