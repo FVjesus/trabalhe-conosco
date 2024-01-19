@@ -40,6 +40,13 @@ export class ProducerController {
  *   get:
  *     summary: Retorna uma fazendo pelo id
  *     tags: [Fazendas]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID da fazenda a ser recuperada
+ *        schema:
+ *          type: integer
  *     responses:
  *       '400':
  *         description: id inválido
@@ -67,6 +74,12 @@ export class ProducerController {
  *   post:
  *     summary: Cria uma fazenda
  *     tags: [Fazendas]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/FazendaInput'
  *     responses:
  *       '500':
  *         description: Erro interno
@@ -97,6 +110,19 @@ export class ProducerController {
  *   put:
  *     summary: Atualiza uma fazendo pelo id
  *     tags: [Fazendas]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID da fazenda a ser recuperada
+ *        schema:
+ *          type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/FazendaInput'
  *     responses:
  *       '500':
  *         description: Erro interno
@@ -127,6 +153,13 @@ export class ProducerController {
  *   delete:
  *     summary: Deleta uma fazendo pelo id
  *     tags: [Fazendas]
+ *     parameters:
+ *      - in: path
+ *        name: id
+ *        required: true
+ *        description: ID da fazenda a ser recuperada
+ *        schema:
+ *          type: integer
  *     responses:
  *       '400':
  *         description: id inválido
